@@ -51,10 +51,11 @@ Remotion 动作编排与实现
 
 ### 2. 视觉与动效规范层
 
-`references/` 包含三份创作规范：
+`references/` 包含四份创作规范：
 
 - `visual-direction.md`：视觉方向、排版、字体、颜色、材质和构图规则
 - `remotion-choreography.md`：时间结构、动作语法和多图差异化规则
+- `motion-recipes.md`：适合 Live Photo 的文字、图片、光效、纹理和结构动效实现配方
 - `quality-gate.md`：关键帧检查、审美评分和技术验收标准
 
 ### 3. 可复用 Remotion workspace
@@ -111,12 +112,16 @@ remotion-livephoto-workspace/
 | Python 3.10+ | 初始化 workspace 与转换格式 |
 | FFmpeg / ffprobe | 视频转码、裁剪和封面提取 |
 
+Remotion 首次执行 Composition 枚举或渲染时，通常还会下载 Chrome Headless Shell。该浏览器会缓存在 workspace 中，后续不需要重复下载。
+
 ### Workspace Node 依赖
 
 母版当前包含：
 
 - `remotion`
 - `@remotion/cli`
+- `@remotion/fonts`
+- `@remotion/layout-utils`
 - `react`
 - `react-dom`
 - `typescript`
@@ -202,7 +207,8 @@ python -m pip install mutagen -i https://pypi.tuna.tsinghua.edu.cn/simple
 2. 不要默认同时启用代理；国内镜像可用时直接使用镜像。
 3. 只有目标为海外站点，或国内镜像出现超时、404、连接失败、资源不完整时，才临时启用用户提供的代理。
 4. 镜像或代理应尽量只作用于当前命令，不修改全局 npm、Git 或系统网络配置。
-5. workspace 已有可用 `node_modules` 时，不应再次安装依赖。
+5. Remotion 首次运行可能从海外地址下载 Chrome Headless Shell；仅在无法连接时，为该次命令临时使用用户提供的代理。
+6. workspace 已有可用 `node_modules` 时，不应再次安装依赖。
 
 ## 创建新项目
 
@@ -221,6 +227,8 @@ out/<project-slug>/
 - 用户图片使用 `staticFile()` 和 Remotion `<Img>` 引用
 - 所有动画由 `useCurrentFrame()`、`interpolate()`、`spring()` 或 `Sequence` 驱动
 - 禁止 CSS transition、CSS animation 和依赖实时状态的非确定性动画
+- 优先复用母版内置的遮罩文字、单词错峰、图片视差、光扫、纹理和高亮组件
+- 使用 Sequence 时设置 `premountFor`，随机视觉使用 Remotion `random()` 和稳定 seed
 - 多张作品应拥有不同的构图原型、动作命题和主动作
 
 ## 常用命令

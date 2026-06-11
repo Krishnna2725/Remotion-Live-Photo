@@ -126,6 +126,7 @@ remotion-livephoto-workspace/
 - pip 优先使用命令级参数 `-i https://pypi.tuna.tsinghua.edu.cn/simple`。
 - 不要为了安装依赖默认启用代理，也不要轻易修改 npm、Git、pip 或系统的全局配置。
 - 仅当目标本身是海外站点，或国内镜像超时、404、连接失败、资源不完整时，才临时使用用户提供的代理；操作结束后恢复镜像优先策略。
+- Remotion 首次执行 Composition 枚举或渲染时，可能从海外地址下载 Chrome Headless Shell。先允许首次下载完成；若国内网络无法连接，再仅为该命令临时使用用户提供的代理。
 - workspace 已有可用 `node_modules` 时，不执行任何网络安装命令。
 
 ## 工作流
@@ -174,13 +175,18 @@ remotion-livephoto-workspace/
 
 ### 4. 实现 Remotion
 
+- 开始写场景代码前读取 [references/motion-recipes.md](references/motion-recipes.md)，根据视觉方向选择一个主动作配方和最多两个辅助配方。
 - 在长期 workspace 内创建 `src/projects/<project-slug>/`，并注册到 `src/projects/registry.ts`。
 - Composition id 使用 `livephoto-<project-slug>-<scene-slug>`。
 - 不要创建新的 `package.json`、`node_modules`、`src/Root.tsx` 或独立 Remotion 工程。
+- 优先复用 `src/shared/motion-primitives.tsx` 中的 `MaskReveal`、`StaggerWords`、`ParallaxImage`、`LightSweep`、`FilmGrain` 和 `HighlightWipe`，再为作品编写独特构图。
 - 把视觉 token、时间 token 和组件分离，避免散落魔法数字。
 - 共享同一时机的属性先计算一个 `progress`，再映射到 `opacity`、`transform` 等属性。
 - 动画优先使用 `transform` 和 `opacity`；避免逐帧改变昂贵的大面积 blur。
-- 使用本地字体或 `@remotion/google-fonts`，不要依赖系统恰好安装的字体。
+- 使用 `@remotion/fonts` 加载本地字体；仅在网络条件合适时使用 `@remotion/google-fonts`。不要依赖系统恰好安装的字体。
+- 可变文案存在溢出风险时，使用 `@remotion/layout-utils` 的 `measureText()`、`fitText()` 或 `fillTextBox()`，并确保字体已加载。
+- 使用 `<Sequence>` 编排独立阶段时设置 `premountFor`；记住 Sequence 内 `useCurrentFrame()` 从 0 开始。
+- 随机视觉必须使用 Remotion `random()` 和稳定 seed，禁止 `Math.random()`。
 - 在写主构图前明确字体方案并验证加载成功。中文展示字体不得默认使用微软雅黑、黑体等系统默认字体充当设计字体。
 - 让第 0 帧可观看，让最终稳定帧成为最强画面。
 
