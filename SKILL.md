@@ -119,6 +119,15 @@ remotion-livephoto-workspace/
 - skill 内的 `assets/remotion-workspace/` 是只读母版，不要直接在母版中制作用户项目或安装依赖。
 - 新增第三方 Remotion 包确有必要时，只安装缺失包，并先说明用途。
 
+### 中国大陆网络环境
+
+- 执行 `npm`、`npx`、`pnpm`、`yarn`、`pip`、脚手架或依赖安装时，优先使用国内镜像。
+- npm 优先使用命令级参数 `--registry=https://registry.npmmirror.com`，或为当前进程临时设置 `npm_config_registry`。
+- pip 优先使用命令级参数 `-i https://pypi.tuna.tsinghua.edu.cn/simple`。
+- 不要为了安装依赖默认启用代理，也不要轻易修改 npm、Git、pip 或系统的全局配置。
+- 仅当目标本身是海外站点，或国内镜像超时、404、连接失败、资源不完整时，才临时使用用户提供的代理；操作结束后恢复镜像优先策略。
+- workspace 已有可用 `node_modules` 时，不执行任何网络安装命令。
+
 ## 工作流
 
 ### 1. 定义创意
