@@ -1,0 +1,4 @@
+interface:
+  display_name: "Remotion Live Photo Director"
+  short_description: "用高级视觉审美设计并导出 Remotion 实况照片"
+  default_prompt: "Use $remotion-livephoto to design and render a polished Live Photo from my content."
